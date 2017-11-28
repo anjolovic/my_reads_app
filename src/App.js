@@ -1,32 +1,55 @@
-import React from 'react'
-// import * as BooksAPI from './BooksAPI'
-import './App.css'
+import React, {Component} from 'react'
+import BookShelf from './components/BookShelf'
 import SearchBooks from './components/SearchBooks'
-import ListingBooks from './components/ListingBooks'
-import { Route } from 'react-router-dom'
+import {Route} from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
 
-class BooksApp extends React.Component {
+class App extends Component {
+
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: true
+    books: []
   }
+  
+
+  componentDidMount = () => {
+    BooksAPI.getAll().then((books) => {
+      this.setState({
+        books
+      })
+    })
+  }
+
 
   render() {
     return (
+      <div className="books">
       <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchBooks />
-        ) : (
-          < ListingBooks />
-        )}
+        <div className="list-books">
+          <div className="list-books-title">
+            <h1>MyReads</h1>
+          </div>
+            <Route exact path="/" render={() => (
+              <BookShelf
+              shelfTitle='Currently Reading'
+              books={this.state.books.filter((book) => book.shelf === 'currentlyReading' )}/>
+
+            )}/>
+            <Route exact path="/" render={() => (
+              <BookShelf
+              shelfTitle='Want To Read'
+              books={this.state.books.filter((book) => book.shelf === 'wantToRead' )}/>
+            )}/>
+            <Route exact path="/" render={() => (
+              <BookShelf
+              shelfTitle='Read'
+              books={this.state.books.filter((book) => book.shelf === 'read' )}/>
+            )} />
+        </div>
+        < Route path='/search' component={SearchBooks} />
       </div>
+    </div>
     )
   }
 }
 
-export default BooksApp
+export default App
