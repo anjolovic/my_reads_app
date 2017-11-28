@@ -25,7 +25,7 @@ class App extends Component {
     return (
       <div className="app">
         <Route path="/search" component={SearchBooks} />
-        <Route exect path="/" render={() =>
+        <Route exact path="/" render={() =>
           <BookShelf
               books={this.state.books}/>
         }/>
